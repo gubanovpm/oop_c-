@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cmath>
 
-#include "point.h"
-#include "circle.h"
+#include "point.hpp"
+#include "circle.hpp"
 
 circle_t::circle_t(const point_t& acenter, float aradius) : 
 	center(acenter), 

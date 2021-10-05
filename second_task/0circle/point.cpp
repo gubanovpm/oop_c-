@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "point.h"
+#include "point.hpp"
 
 point_t::point_t(float ax, float ay) : x(ax), y(ay) {}
 point_t::point_t() : x(0), y(0) {}

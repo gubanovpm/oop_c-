@@ -1,6 +1,6 @@
 #include <iostream>
-#include "point.h"
-#include "circle.h"
+#include "point.hpp"
+#include "circle.hpp"
 
 int main() {
 	point_t p = {7, -1};
