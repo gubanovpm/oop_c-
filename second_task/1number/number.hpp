@@ -10,12 +10,14 @@ private:
 
 public:
 	
+	number_t();
 	number_t(long long int a);
 	number_t(const char *a);
 	~number_t();
 
-	number_t(number_t &other);
+	number_t(const number_t &other);
 	number_t(number_t &&other);
+	number_t &operator= (const number_t &other);
 	
 	void resize(size_t new_size);
 	number_t operator+= (const number_t &other);

@@ -2,9 +2,13 @@
 #include "number.hpp"
 
 int main() {
-	number_t x ("123456\0");
-	number_t y = 0ll; 
-	number_t z = 9999999999ll;
-	z += x;
-	std::cout << x << " " << y << " " << z << std::endl;
+
+	number_t *Fib = new number_t [1000];
+	Fib[0] = 1;
+	Fib[1] = 1;
+	for (int i = 2; i < 1000; i++)
+		Fib[i] = Fib[i - 1] + Fib[i - 2];
+	std::cout << Fib[999] << "\n";
+
+	return 0;
 }
