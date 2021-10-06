@@ -11,14 +11,16 @@ int main() {
 	std::cout << Fib[999] << "\n";
 
 	number_t x = 1;
-	for (int i = 2; i <= 10; ++i) {
+	for (int i = 2; i <= 1000; ++i) {
 		x *= i;
 	}
-	
+
+	std::cout << x << std::endl;
+
 	std::string begin = "" ;
 	std::cin >> begin ;
 
-	number_t current(begin.data()), mx(0ll);
+	number_t current(begin.data()), mx = current, t_num = current;
 	int steps = 0;
 
 	while (current != number_t(1)) {
@@ -27,10 +29,13 @@ int main() {
 			mx = current;
 		if (current.isEven()) 
 			current.div2();
-		else
-			current = 3 * current + 1;
+		else {
+			current = 3 * current + 1 ;
+		}
 	}
 	std::cout << "steps = " << steps << " ; max = " << mx << std::endl;
+
+	std::cout << number_t("123456789654321789852963741") * number_t("123456789654321789852963741") << std::endl;
 
 	return 0;
 }

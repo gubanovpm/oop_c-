@@ -3,12 +3,14 @@
 struct number_t {
 private:
 	
+
+
+public:
+	
 	static const int base = 100;
 	size_t size;
 	size_t capacity;
 	char* data;
-
-public:
 	
 	number_t();
 	number_t(long long int a);
