@@ -16,11 +16,21 @@ int main() {
 	}
 	
 	std::string begin = "" ;
-	std::cin << beign ;
+	std::cin >> begin ;
 
-	while (begin != 1) {
-		
+	number_t current(begin.data()), mx(0ll);
+	int steps = 0;
+
+	while (current != number_t(1)) {
+		++steps;
+		if (current > mx)
+			mx = current;
+		if (current.isEven()) 
+			current.div2();
+		else
+			current = 3 * current + 1;
 	}
+	std::cout << "steps = " << steps << " ; max = " << mx << std::endl;
 
 	return 0;
 }

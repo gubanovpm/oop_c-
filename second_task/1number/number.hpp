@@ -21,6 +21,9 @@ public:
 	number_t &operator= (const number_t &other);
 	number_t operator+= (const number_t &other);
 	number_t operator*= (const number_t &other);
+	bool operator== (const number_t &other) const;
+	bool operator!= (const number_t &other) const;
+	bool operator> (const number_t &other) const;
 
 	void resize(size_t new_size);
 	bool isEven() const ;

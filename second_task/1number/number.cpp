@@ -211,9 +211,23 @@ void number_t::div2() {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
-bool number_t::operator== (const number_t &other) {
+bool number_t::operator== (const number_t &other) const{
 	if (other.size != size) return false;
 	for (int i = 0; i < size; ++i)
 		if (data[i] != other.data[i]) return false;
 	return true;
+}
+
+bool number_t::operator!= (const number_t &other) const{
+	return !(*this == other);
+}
+
+bool number_t::operator> (const number_t &other) const {
+	if (size > other.size) return true;
+	
+	for (int i = size - 1; i >= 0; --i)
+		if (data[i] > other.data[i]) return true;
+			else if (data[i] != other.data[i]) return false;
+				else continue;
+	return false;
 }
