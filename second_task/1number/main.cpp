@@ -14,7 +14,13 @@ int main() {
 	for (int i = 2; i <= 10; ++i) {
 		x *= i;
 	}
-	std::cout << x << std::endl;
+	
+	std::string begin = "" ;
+	std::cin << beign ;
+
+	while (begin != 1) {
+		
+	}
 
 	return 0;
 }

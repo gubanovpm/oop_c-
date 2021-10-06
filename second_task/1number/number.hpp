@@ -24,6 +24,7 @@ public:
 
 	void resize(size_t new_size);
 	bool isEven() const ;
+	void div2();
 
 	friend number_t operator+ (const number_t &left, const number_t &right);
 	friend number_t operator* (const number_t &left, const number_t &right);
