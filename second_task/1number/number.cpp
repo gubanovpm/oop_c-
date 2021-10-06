@@ -130,6 +130,44 @@ number_t operator+ (const number_t &left, const number_t &right) {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
+number_t number_t::operator*= (const number_t &other) {
+	long long int remainder = 0, cur = 0, sz = 2 * std::max(capacity, other.capacity) ;
+	number_t sum;
+	sum.resize(sz);
+	if (capacity < sz)
+		resize(sz);
+	for (int state = 0; state < other.size; ++state) {
+		number_t temp;
+		temp.resize(sz);
+		temp.size = size + state;
+		remainder = 0;
+		for (int i = 0; i < size; ++i) {
+			cur = data[i] * other.data[state] + remainder;
+			temp.data[i + state] = cur % base;
+			remainder = cur / base;
+		}
+		if (remainder != 0) {
+			temp.data[size + state] += remainder;
+			++temp.size;
+		}
+
+		sum += temp;
+	}	
+	capacity = sum.capacity;
+	size     = sum.size;
+	std::swap(data, sum.data);
+
+	return *this;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+number_t operator* (const number_t &left, const number_t &right) {
+	number_t result = left;
+	result *= right;
+	return result;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream& stream, const number_t& right) {
 	stream << (int)right.data[right.size - 1];
 
@@ -153,4 +191,9 @@ void number_t::resize(size_t new_size) {
 	
 	data = new_data;
 	capacity = new_size;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+bool number_t::isEven() const {
+	return (!(data[0] % 2));
 }

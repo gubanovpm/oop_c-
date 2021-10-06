@@ -17,11 +17,15 @@ public:
 
 	number_t(const number_t &other);
 	number_t(number_t &&other);
-	number_t &operator= (const number_t &other);
 	
-	void resize(size_t new_size);
+	number_t &operator= (const number_t &other);
 	number_t operator+= (const number_t &other);
+	number_t operator*= (const number_t &other);
+
+	void resize(size_t new_size);
+	bool isEven() const ;
 
 	friend number_t operator+ (const number_t &left, const number_t &right);
+	friend number_t operator* (const number_t &left, const number_t &right);
 	friend std::ostream &operator<<(std::ostream& stream, const number_t& right);
 };
