@@ -131,28 +131,32 @@ number_t operator+ (const number_t &left, const number_t &right) {
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 number_t number_t::operator*= (const number_t &other) {
-	long long int remainder = 0, cur = 0, sz = 2 * std::max(capacity, other.capacity) ;
-	number_t sum;
-	sum.resize(sz);
-	if (capacity < sz)
+	long long int remainder = 0, cur = 0, sz = 2 * std::max(size, other.size) + 2;
+	
+	number_t sum = 0ll;
+	if (capacity <= sz)
 		resize(sz);
+
+	number_t temp;
+	temp.resize(sz);
+	
 	for (int state = 0; state < other.size; ++state) {
-		number_t temp;
-		temp.resize(sz);
-		temp.size = size + state;
 		remainder = 0;
-		for (int i = 0; i < size; ++i) {
-			cur = data[i] * other.data[state] + remainder;
-			temp.data[i + state] = cur % base;
+		temp.size = state + size ;
+		for (int it = 0; it < size; ++it) {
+			cur = data[it] * other.data[state] + remainder;
+			temp.data[it + state] = cur % base;
 			remainder = cur / base;
 		}
+
 		if (remainder != 0) {
-			temp.data[size + state] += remainder;
-			++temp.size;
+			temp.data[temp.size] = remainder;
+			++temp.size; 
 		}
 
 		sum += temp;
-	}	
+	}
+
 	capacity = sum.capacity;
 	size     = sum.size;
 	std::swap(data, sum.data);
@@ -162,8 +166,14 @@ number_t number_t::operator*= (const number_t &other) {
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 number_t operator* (const number_t &left, const number_t &right) {
-	number_t result = left;
-	result *= right;
+	number_t result;
+	if (left > right) {
+		result = left;
+		result *= right;
+		return result;
+	}
+	result = right;
+	result *= left;
 	return result;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -181,11 +191,14 @@ std::ostream &operator<<(std::ostream& stream, const number_t& right) {
 void number_t::resize(size_t new_size) {
 	char *new_data = new char [new_size] {};
 
+	//printf("i'm here! - 1\n");
+
 	int copy_size = std::min(new_size, size);
 	size = copy_size;
 
 	for (int i = 0 ; i < copy_size; ++i)
 		new_data[i] = data[i];
+	//printf("i'm here after for!\n");
 
 	delete [] data;
 	
@@ -224,6 +237,7 @@ bool number_t::operator!= (const number_t &other) const{
 
 bool number_t::operator> (const number_t &other) const {
 	if (size > other.size) return true;
+		else if (size < other.size) return false;
 	
 	for (int i = size - 1; i >= 0; --i)
 		if (data[i] > other.data[i]) return true;
