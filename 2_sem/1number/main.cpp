@@ -35,7 +35,5 @@ int main() {
 	}
 	std::cout << "steps = " << steps << " ; max = " << mx << std::endl;
 
-	std::cout << number_t("123456789654321789852963741") * number_t("123456789654321789852963741") << std::endl;
-
 	return 0;
 }
