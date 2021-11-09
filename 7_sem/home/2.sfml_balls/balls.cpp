@@ -4,23 +4,19 @@
 #include <cstdlib>
 #include <ctime>
 
-using namespace std;
-
-
-struct Ball
-{
-    float radius;
+struct Ball {
+    float        radius;
     sf::Vector2f position;
     sf::Vector2f velocity;
 };
 
+void boundary_conditions_tor (sf::Vector2f &position, std::pair < float, float > bound);
 
-int main()
-{
+int main() {
     srand(time(0));
     
-    const int width = 1000;
-    const int height = 800;
+    const int width   = 800;
+    const int height  = 600;
     const int n_balls = 10;
 
     // Шаг по времени
@@ -28,7 +24,6 @@ int main()
 
     // Создаём экземпляр класса окно
     sf::RenderWindow window(sf::VideoMode(width, height), "My window");
-    // Задаём максимальное количество кадров в секунду
     window.setFramerateLimit(24);
 
     // Так как sf::CircleShape занимает много памяти, создаём всего 1 экземпляр
@@ -56,17 +51,7 @@ int main()
 
         for (int i = 0; i < n_balls; i++) {
             balls[i].position += balls[i].velocity * delta_t;
-
-            /*
-            if (balls[i].position.x < 0)
-                balls[i].position.x += width;
-            if (balls[i].position.x > width)
-                balls[i].position.x -= width;
-            if (balls[i].position.y < 0)
-                balls[i].position.y += height;
-            if (balls[i].position.y > height)
-                balls[i].position.y -= height;
-            */
+			boundary_conditions_tor(balls[i].position, {width, height});
 
             // Используем 1 sf::CircleShape, чтобы нарисовать все шары
             circle.setRadius(balls[i].radius);
@@ -76,6 +61,7 @@ int main()
             // В дальнейшем функция, setPosition устанавливает положение шарика так, 
             // чтобы его центр был в точке balls[i].position
             circle.setOrigin(balls[i].radius, balls[i].radius);
+
             circle.setPosition(balls[i].position);
             
             window.draw(circle);
@@ -86,4 +72,12 @@ int main()
     }
 
     return 0;
+}
+
+void boundary_conditions_tor (sf::Vector2f &position, std::pair < float, float > bound) {
+	if (position.y > bound.second) position.y -= bound.second;
+	else if (position.y < 0)       position.y += bound.second;
+
+	if (position.x > bound.first) position.x -= bound.first ;
+	else if (position.x < 0)      position.x += bound.first ;
 }
