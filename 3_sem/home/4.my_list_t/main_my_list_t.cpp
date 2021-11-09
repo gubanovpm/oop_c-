@@ -1,26 +1,23 @@
 #include "my_list_t.hpp"
-/*
+
+// todo: very strange and poor iterator
+
 int main() {
-    List a;
-    list_init(&a);
+    my_list_t<int> a;
 
-    for (int i = 0; i < 10; ++i)
-        list_push_front(&a, i * i);
+    for (int i = 0; i < 10; ++i) a.push_front(i * i);
+    std::cout << a << std::endl;
 
-    list_print(&a);
+    my_list_t<int>::iterator_t it = a.begin();  it += 2;
+    std::cout << a.begin() << " " << it << std::endl;
+    a.insert_after(it, 123);
+    a.insert_after(it, 654);
+    std::cout << a << std::endl;
 
-    Node* pn = a.head->next->next;
-    list_insert_after(&a, pn, 123);
-    list_insert_after(&a, pn, 654);
+    it += 3;
+    a.erase_after(it);
+    a.erase_after(it);
+    std::cout << a << std::endl;
 
-    list_print(&a);
-
-    pn = pn->next->next->next;
-    list_erase_after(&a, pn);
-    list_erase_after(&a, pn);
-
-    list_print(&a);
-
-    list_destroy(&a);
 	return 0;
-}*/
+}
