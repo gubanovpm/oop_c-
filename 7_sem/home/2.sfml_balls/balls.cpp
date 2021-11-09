@@ -18,15 +18,11 @@ int main() {
     const int width   = 800;
     const int height  = 600;
     const int n_balls = 10;
-
-    // Шаг по времени
     const float delta_t = 0.1;
 
-    // Создаём экземпляр класса окно
     sf::RenderWindow window(sf::VideoMode(width, height), "My window");
     window.setFramerateLimit(24);
 
-    // Так как sf::CircleShape занимает много памяти, создаём всего 1 экземпляр
     sf::CircleShape circle(50.0f);
     circle.setFillColor({200, 216, 200});
 
@@ -41,33 +37,22 @@ int main() {
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            // В данном примере проверяем окно на закрытие
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        // очистить скрытый холст черным цветом
         window.clear(sf::Color::Black);
 
         for (int i = 0; i < n_balls; i++) {
             balls[i].position += balls[i].velocity * delta_t;
 			boundary_conditions_tor(balls[i].position, {width, height});
-
-            // Используем 1 sf::CircleShape, чтобы нарисовать все шары
             circle.setRadius(balls[i].radius);
-            // setOrigin - задаёт центр объекта
-            // По умолчанию центр - в левом верхнем угле объекта
-            // Строка ниже устанавливает центр в центре шарика
-            // В дальнейшем функция, setPosition устанавливает положение шарика так, 
-            // чтобы его центр был в точке balls[i].position
             circle.setOrigin(balls[i].radius, balls[i].radius);
-
             circle.setPosition(balls[i].position);
             
             window.draw(circle);
         }
 
-        // отображаем содержимое скрытого холста на экран
         window.display();
     }
 
