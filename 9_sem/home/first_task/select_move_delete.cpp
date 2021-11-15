@@ -4,7 +4,8 @@
 #include <algorithm>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include "../context_menu/context_menu.hpp"
+
+#include "context_menu.hpp"
 
 // Вспомогательные функции, вычисляет расстояние между двумя точками
 float distance(sf::Vector2f start, sf::Vector2f finish) {

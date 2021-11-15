@@ -27,8 +27,7 @@
 */
 
 
-class ContextMenu
-{
+class ContextMenu {
 private:
     inline static const sf::Color kDefaultColor {sf::Color(190, 210, 190)};
     inline static const sf::Color kHoverColor {sf::Color(150, 170, 150)};
@@ -48,8 +47,7 @@ private:
     bool m_isUpdated = false;
     int m_hoverPosition = -1;
 
-    int onMousePressed(const sf::Event& event)
-    {
+    int onMousePressed(const sf::Event& event) {
         if (event.mouseButton.button == sf::Mouse::Right) {
             m_isOpened = true;
             sf::Vector2f mousePosition = m_renderWindow.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
@@ -62,8 +60,7 @@ private:
         return -1;
     }
 
-    void onMouseMove(const sf::Event& event)
-    {
+    void onMouseMove(const sf::Event& event) {
         if (!m_isOpened) {
             return;
         }
@@ -78,8 +75,7 @@ private:
 
 public:
 
-    ContextMenu(sf::RenderWindow& window, const sf::Font& font) : m_renderWindow(window)
-    {   
+    ContextMenu(sf::RenderWindow& window, const sf::Font& font) : m_renderWindow(window) {   
         m_text.setFont(font);
         m_text.setCharacterSize(kCharacterSize);
         m_text.setFillColor(kTextColor);
@@ -91,14 +87,12 @@ public:
         m_hoverPosition = -1;
     }
 
-    void addButton(const sf::String& name)
-    {
+    void addButton(const sf::String& name) {
         m_buttons.push_back(name);
         m_isUpdated = false;
     }
 
-    void draw()
-    {
+    void draw() {
         if (!m_isOpened) {
             return;
         }
