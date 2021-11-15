@@ -109,8 +109,6 @@ int main() {
 
     sf::Vector2f saveToCreate = {-1, -1};
 
-    // TODO: copy paste cut
-
     // Конструируем контекстное меню
     sf::Font font;
     if (!font.loadFromFile("../context_menu/consolas.ttf")) {
