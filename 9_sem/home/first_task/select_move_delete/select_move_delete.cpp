@@ -16,7 +16,8 @@ void drawLine(sf::RenderWindow& window, sf::Vector2f start, sf::Vector2f finish,
     sf::Vertex line_vertices[2] = {sf::Vertex(start, color), sf::Vertex(finish, color)};
     window.draw(line_vertices, 2, sf::Lines);
 }
-
+// Вспомогательный тип данных для контекстного меню
+enum context_menu_button_t {DELETE = 0, CREATE, RANDOM_COLOR, INCREASE, DECREASE};
 
 // Вспомагательный класс, описывет шарик
 // position - положение шарика; radius - радиус
@@ -98,17 +99,88 @@ int main() {
 
     // Специальная переменная, которая будет показывать, что мы находимся в режиме выделения
     bool isSelecting = false;
+    // Специальная переменная, которая будет показывать, что мы находимся в режиме перемещения
     bool isMoving    = false;
+    // Специальная переменная, которая будет показывать на предыдущее полоожение 
+    // указателя мышки для соответствующего перемещения
     sf::Vector2f lastMousePosition = {-1, -1};
+
+    sf::Vector2f saveToCreate = {-1, -1};
+
+    // TODO: copy paste cut
+
+    // Конструируем контекстное меню
+    sf::Font font;
+    if (!font.loadFromFile("../context_menu/consolas.ttf")) {
+        std::cout << "Can't load button font" << std::endl;
+    }
+    std::vector<sf::String> contextMenuString {"Delete", "Create", "Random Color", "Increase", "Decrease"};
+    ContextMenu contextMenu(window, font);
+    for (const auto &elem: contextMenuString) {
+        contextMenu.addButton(elem);
+    }
+
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
+            // Если текущее событие = "закрыть окно", закроем его и окончим работу
             if (event.type == sf::Event::Closed) {
                 window.close();
                 break;
             }
             
+            // обработка функций контекстного меню
+            int result = contextMenu.handleEvent(event);
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
+                saveToCreate = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y}) ;
+            // в зависимости от типа кнопки контекстного меню будем выполнять одно из представленных действий
+            switch (result) {
+                // аналогично нажатия кнопки Delete
+                case DELETE : {
+                    auto iter = balls.begin(), t = iter;
+                    while (iter != balls.end()) {
+                        if (iter->isChoosen) {
+                            t = std::next(iter);
+                            balls.erase(iter);
+                            iter = t;
+                        } else ++iter;
+                    }
+                    break;
+                }
+                // аналогично LAlt + LMB
+                case CREATE: { 
+                    balls.push_back(Ball(saveToCreate, 5 + rand() % 42));
+                    break;
+                }
+                // аналогично SPACE
+                case RANDOM_COLOR: { 
+                    sf::Color new_color = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+                    for (Ball &b : balls)
+                        if (b.isChoosen) {
+                            b.color_ = new_color;
+                        }
+                    continue;
+                }
+                // Увеличить все выбранные шары в 1.25 раза
+                case INCREASE: { 
+                    for (Ball &b : balls) 
+                        if (b.isChoosen) {
+                            b.radius *= 1.25;
+                        }
+                    continue;
+                }
+                // Уменьшить все выбранные шары в 1.25 раза
+                case DECREASE: {
+                    for (Ball &b : balls) 
+                        if (b.isChoosen) {
+                           b.radius /= 1.25;
+                        }
+                    continue;
+                }
+                // default: std::cout << "ERROR : Unknown context menu button" << std::endl; exit(1);
+            }
+
             if (event.type == sf::Event::MouseMoved) {
                 sf::Vector2f mousePosition = window.mapPixelToCoords({event.mouseMove.x, event.mouseMove.y});
                 
@@ -129,10 +201,8 @@ int main() {
                         if(b.isChoosen) 
                             b.position += shiftv;
                 }
-                continue;
             }
 
-            // lastMousePosition = {-1, -1};
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2f mousePosition = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
                 if (event.mouseButton.button == sf::Mouse::Left) {
@@ -160,7 +230,7 @@ int main() {
                     }
                     // ЛКМ + левый Alt - добавляем новый случайный шарик
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
-                        balls.push_back(Ball(mousePosition, 5 + rand() % 40));
+                        balls.push_back(Ball(mousePosition, 5 + rand() % 42));
                     }
                     // Задаём новое положения прямоугольника выделения
                     if (!isMoving) isSelecting = true;
@@ -168,7 +238,6 @@ int main() {
                     selectionRect.setSize({0, 0});
                 }
                 lastMousePosition = mousePosition;
-                continue;
             }
 
             // SPACE - меняем цвет всех выделенных шариков на случайный
@@ -177,7 +246,6 @@ int main() {
                 for (Ball &b : balls) {
                     if (b.isChoosen) b.color_ = new_color;
                 }
-                continue;
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Delete)) {
@@ -200,13 +268,15 @@ int main() {
 
         window.clear(sf::Color::Black);
         // Рисуем все шарики
-        for (Ball& b : balls) {
+        for (Ball &b : balls) {
             b.draw(window);
         }
         // Рисуем прямоугольник выделения
         if (isSelecting) {
             window.draw(selectionRect);
         }
+        // Рисуем контекстное меню
+        contextMenu.draw();
         window.display();
     }
 
