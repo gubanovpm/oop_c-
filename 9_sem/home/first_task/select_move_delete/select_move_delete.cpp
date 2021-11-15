@@ -90,6 +90,8 @@ int main() {
 
     // Создаём связный список из шариков
     std::list<Ball> balls;
+    // Создаем буффер для копирования шариков
+    std::list<Ball> copy_balls;
 
     // Создаём прямоугольник выделения
     sf::RectangleShape selectionRect;
@@ -247,7 +249,8 @@ int main() {
                     if (b.isChoosen) b.color_ = new_color;
                 }
             }
-
+            
+            // Delete - удаляем все выбранные шарики
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Delete)) {
                 auto it = balls.begin(), temp = it;
                 while (it != balls.end()) {
@@ -257,6 +260,51 @@ int main() {
                         it = temp;
                     } else ++it;
                 }
+            }
+
+            // Copy Paste Cut
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                // Cut
+                if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::X) {
+                    copy_balls.clear();
+                    
+                    for (Ball &b : balls)
+                        if (b.isChoosen)
+                            copy_balls.push_back(b);
+
+                    auto iter = balls.begin(), t = iter;
+                    while (iter != balls.end()) {
+                        if (iter->isChoosen) {
+                            t = std::next(iter);
+                            balls.erase(iter);
+                            iter = t;
+                        } else ++iter;
+                    }
+                    continue;
+                }
+
+                // Copy
+                if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::C) {
+                    copy_balls.clear();
+                    for (Ball &b : balls)
+                        if (b.isChoosen)
+                            copy_balls.push_back(b);
+                    continue;
+                }
+
+                // Paste
+                if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::V) {
+                    for (Ball &b : balls)
+                        b.isChoosen = false;
+                    for (Ball &b : copy_balls)
+                        balls.push_back(b);
+                }
+            }
+
+            // To Escape
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                window.close();
+                break;
             }
 
             // При отпускании кнопки мыши выходим из режима выделения и передвижения
