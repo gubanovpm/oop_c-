@@ -112,7 +112,7 @@ int main() {
 
     // Конструируем контекстное меню
     sf::Font font;
-    if (!font.loadFromFile("../context_menu/consolas.ttf")) {
+    if (!font.loadFromFile("consolas.ttf")) {
         std::cout << "Can't load button font" << std::endl;
     }
     std::vector<sf::String> contextMenuString {"Delete", "Create", "Random Color", "Increase", "Decrease"};

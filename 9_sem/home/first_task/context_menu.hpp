@@ -36,15 +36,15 @@ private:
     inline static const int kCharacterSize = 16;
     inline static const float kMenuWidthMultiplier = 1.2;
 
-    sf::RenderWindow& m_renderWindow;
+    sf::RenderWindow   &m_renderWindow;
     sf::RectangleShape m_shape;
     sf::RectangleShape m_hoverShape;
     sf::Text m_text;
 
     std::vector<sf::String> m_buttons;
 
-    bool m_isOpened = false;
-    bool m_isUpdated = false;
+    bool m_isOpened     = false;
+    bool m_isUpdated    = false;
     int m_hoverPosition = -1;
 
     int onMousePressed(const sf::Event& event) {
