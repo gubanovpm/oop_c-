@@ -21,6 +21,7 @@ int main () {
         float dt = clock.restart().asSeconds();
         // Обработка событий
         sf::Event event;
+        // game.bonusCheck();
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
                 window.close();

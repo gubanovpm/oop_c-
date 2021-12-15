@@ -8,7 +8,7 @@ struct Paddle {
     
     // Поля:
     sf::Vector2f position;
-    sf::Vector2f size;
+    sf::Vector2f size = {10, 1000};
 
     // Методы:
     Paddle() {}

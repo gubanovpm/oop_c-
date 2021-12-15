@@ -12,9 +12,14 @@
 void arkanoid_game::Arkanoid::addRandomBonus(sf::Vector2f position) {
     if (m_bonuses.size() > kMaxNumBonuses) return;
     int max_rand = 10000;
-    if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability)  {
-        m_bonuses.push_back(new Bonus(position));
-    }
+    if      ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+        m_bonuses.push_back(new Triple(position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+        m_bonuses.push_back(new BigRocket(position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+        m_bonuses.push_back(new LitRocket(position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+        m_bonuses.push_back(new SlowBall (position));
 }
 
 void arkanoid_game::Arkanoid::handleBallCollisions(Ball& ball) {
@@ -34,23 +39,16 @@ arkanoid_game::Arkanoid::Arkanoid(sf::FloatRect border, sf::Font& font) :
     m_gameState{GameState::stuck},
     m_numLives{7} {
         float gap = border.width / 10;
-        m_brickGrid = BrickGrid({border.left + gap, border.top + gap, border.width - 2 * gap, border.height / 2}, 50, 30);
+        m_brickGrid = BrickGrid({border.left + gap, border.top + gap, border.width - 2 * gap, border.height / 2}, 3, 3);
         m_bonusProbability = 0.1;
-
         m_endText.setFont(font);
-        m_endText.setString("You Win!");
-        m_endText.setCharacterSize(100);
-        m_endText.setFillColor(sf::Color::White);
-        sf::FloatRect textRect = m_endText.getLocalBounds();
-        m_endText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top  + textRect.height / 2.0f);
-        m_endText.setPosition({border.left + border.width / 2, border.top + border.height / 2});
     }
 
 sf::FloatRect arkanoid_game::Arkanoid::getBorder() const {
     return m_border;
 }
 
-const arkanoid_game::Paddle& arkanoid_game::Arkanoid::getPaddle() const {
+arkanoid_game::Paddle& arkanoid_game::Arkanoid::getPaddle() {
     return m_paddle;
 }
 
@@ -78,6 +76,7 @@ void arkanoid_game::Arkanoid::update(const sf::RenderWindow& window, float dt) {
     // Если шариков нет, то переходи в режим начала игры и уменьшаем кол-во жизней
     if (m_gameState == GameState::running && m_balls.size() == 0) {
         m_gameState = GameState::stuck;
+        m_bonuses.clear();
         m_numLives--;
     }
     // Если жизни кончились, то переходим в состояние конца игры (проигрыш)
@@ -93,16 +92,24 @@ void arkanoid_game::Arkanoid::update(const sf::RenderWindow& window, float dt) {
         (*it)->update(dt);
         if ((*it)->isColiding(m_paddle)) {
             (*it)->activate(*this);
-            delete *it;
-            it = m_bonuses.erase(it);
+            if ((*it)->deactivate(*this)) {
+                delete (*it);
+                it = m_bonuses.erase(it);
+            }
+            else ++it;
         }
         else if ((*it)->m_position.y > m_border.top + m_border.height) { 
             delete (*it);
             it = m_bonuses.erase(it);
         }
-        else {
-            it++;
+        else ++it;
+    }
+    for (auto it = m_bonuses.begin(); it != m_bonuses.end();) {
+        if ((*it)->m_position.x == -100 && (*it)->deactivate(*this)) {
+            delete (*it);
+            it = m_bonuses.erase(it);
         }
+        else ++it;
     }
 }
 
@@ -136,13 +143,22 @@ void arkanoid_game::Arkanoid::draw(sf::RenderWindow& window) {
         pbonus->draw(window);
     }
     // При завершении игры рисуем надпись
-    if (m_gameState == GameState::endWin) {
-        m_endText.setString("You Win!");
-        window.draw(m_endText);
-    }
-    // При завершении игры рисуем надпись
-    if (m_gameState == GameState::endLose) {
-        m_endText.setString("You Lose!");
+    if (m_gameState == GameState::endLose || m_gameState == GameState::endWin) {
+        if (m_gameState == GameState::endWin) {
+            m_endText.setString("You Win!");
+            
+        }
+        // При завершении игры рисуем надпись
+        if (m_gameState == GameState::endLose) {
+            m_endText.setString("You Lose!");
+        }
+
+        m_endText.setCharacterSize(50);
+        m_endText.setFillColor(sf::Color::White);
+        sf::FloatRect textRect = m_endText.getLocalBounds();
+        m_endText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top  + textRect.height / 2.0f);
+        m_endText.setPosition({m_border.left + m_border.width / 2, m_border.top + m_border.height / 2});
+
         window.draw(m_endText);
     }
 }

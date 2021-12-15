@@ -39,23 +39,26 @@ private:
 
 
     void addRandomBonus(sf::Vector2f position); 
-    void handleBallCollisions(Ball& ball);                  // Функция, которая обрабатывает все столкновения шарика
+    void handleBallCollisions(Ball &ball);                  // Функция, которая обрабатывает все столкновения шарика
 
 
 
 public:
-    Arkanoid(sf::FloatRect border, sf::Font& font);
+    Arkanoid(sf::FloatRect border, sf::Font &font);
 
     sf::FloatRect getBorder() const;
-    const Paddle& getPaddle() const;
-    const BrickGrid& getBrickGrid() const;
+    Paddle &getPaddle();
+    const BrickGrid &getBrickGrid() const;
 
-    void addBall(const Ball& ball);
-    void update(const sf::RenderWindow& window, float dt);  // Эта функция вызывается каждый кадр
-    void draw(sf::RenderWindow& window);
-    void onMousePressed(sf::Event& event);
+    void addBall(const Ball &ball);
+    void update(const sf::RenderWindow &window, float dt);  // Эта функция вызывается каждый кадр
+    void draw(sf::RenderWindow &window);
+    void onMousePressed(sf::Event &event);
 
-    friend class Bonus;                                     // Класс бонус должен быть дружественным, так как он может менять внутреннее состояние игры
+    // Класс бонус должен быть дружественным, так как он может менять внутреннее состояние игры
+    friend class Bonus   ;
+    friend class Triple  ;
+    friend class SlowBall;
 };
 
 }

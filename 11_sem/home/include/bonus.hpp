@@ -14,22 +14,62 @@ class Arkanoid;
 namespace arkanoid_game {
 
 class Bonus {
-private:
-    inline static const float speed = 120;
-    inline static const float radius = 15;
+protected:
+    inline static const float speed       = 120;
+    inline static const float radius      = 15 ;
+    inline static const int   bonus_count = 7  ;
 
     sf::Vector2f m_position;
     float m_time;
 
 public:
     Bonus(sf::Vector2f position);
-    void update(float dt);
-    void draw(sf::RenderWindow& window) const;
-    void activate(Arkanoid& game);
+    virtual ~Bonus() {}
+    void update(float dt);                                  // Двигаем бонус
+    virtual void draw(sf::RenderWindow &window) const = 0 ; // Рисуем бонус
+    virtual void activate(Arkanoid &game) = 0;              // Активация бонуса
+    virtual bool deactivate(Arkanoid &game) { return true; };
 
-    bool isColiding(const Paddle& paddle) const;
-    // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
-    friend class Arkanoid;
+    bool isColiding(const Paddle &paddle) const;
+
+    friend class Arkanoid;                                  // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
+};
+
+class Triple final: public Bonus {
+public:
+    Triple(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+
+    friend class Arkanoid;                                  // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
+};
+
+class BigRocket final: public Bonus {
+public:
+    BigRocket(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+
+    friend class Arkanoid;                                  // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
+};
+
+class LitRocket final: public Bonus {
+public:
+    LitRocket(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+    
+    friend class Arkanoid;                                  // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
+};
+
+class SlowBall final: public Bonus {
+public:
+    SlowBall(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+    bool deactivate(Arkanoid &game) override;
+    
+    friend class Arkanoid;                                  // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
 };
 
 }
