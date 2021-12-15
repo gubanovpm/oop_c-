@@ -12,7 +12,7 @@
 void arkanoid_game::Arkanoid::addRandomBonus(sf::Vector2f position) {
     if (m_bonuses.size() > kMaxNumBonuses) return;
     int max_rand = 10000;
-    if      ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * 2/*/ Bonus::bonus_count*/)
+    if      ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new Triple(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new BigRocket(position));
@@ -20,17 +20,25 @@ void arkanoid_game::Arkanoid::addRandomBonus(sf::Vector2f position) {
         m_bonuses.push_back(new LitRocket(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new SlowBall (position));
-    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
         m_bonuses.push_back(new UnderLine(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new SpeedUp(position));
-    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new BurnIt(position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+        m_bonuses.push_back(new StickyFingers(position));
 }
 
 void arkanoid_game::Arkanoid::handleBallCollisions(Ball& ball) {
     ball.handleWallsCollision(m_border);
     ball.handlePaddleCollision(m_paddle);
+
+    auto [d, isColiding] = m_balls.front().findClosestPoint(m_paddle.getBorder());
+    if (isColiding && m_paddle.isSticky) {
+        // lastVelocity = m_balls.front().velocity;
+        m_balls.front().velocity = {0., 0.};
+    }
 
     for (auto it: m_bonuses) {
         ball.handlePaddleCollision(it->line_);
@@ -45,7 +53,7 @@ void arkanoid_game::Arkanoid::handleBallCollisions(Ball& ball) {
 arkanoid_game::Arkanoid::Arkanoid(sf::FloatRect border, sf::Font& font) :
     m_time{0.0},
     m_border{border},
-    m_paddle{{m_border.left + m_border.width / 2, m_border.top + m_border.height - 100}, {120, 20}},
+    m_paddle{{m_border.left + m_border.width / 2, m_border.top + m_border.height - 100}, {120, 10}},
     m_gameState{GameState::stuck},
     m_numLives{7} {
         float gap = border.width / 10;
@@ -84,11 +92,9 @@ void arkanoid_game::Arkanoid::update(const sf::RenderWindow& window, float dt) {
         else ++it;
     }
     // Если шариков нет, то переходи в режим начала игры и уменьшаем кол-во жизней
-    if (m_gameState == GameState::running && m_balls.size() == 0) {
+    if ((m_gameState == GameState::running || m_gameState == GameState::sticked) && m_balls.size() == 0) {
         m_gameState = GameState::stuck;
-        for (auto it = m_bonuses.begin(), itEnd = m_bonuses.end(); it != itEnd;) {
-            
-        }
+
         m_numLives--;
     }
     // Если жизни кончились, то переходим в состояние конца игры (проигрыш)
@@ -145,6 +151,7 @@ void arkanoid_game::Arkanoid::draw(sf::RenderWindow& window) {
         m_initialBall.position = {m_paddle.position.x, m_paddle.position.y - m_paddle.size.y / 2 - m_initialBall.radius};
         m_initialBall.draw(window);
     }
+
     // Рисуем кол-во жизней вверху слева
     for (int i = 0; i < m_numLives; i++) {
         m_initialBall.position = {m_initialBall.radius * (3 * i + 2), 2 * m_initialBall.radius};
@@ -187,7 +194,14 @@ void arkanoid_game::Arkanoid::onMousePressed(sf::Event& event) {
                 addBall({m_initialBall.radius, newPosition, newVelocity});
             }
             break;
-
+        case GameState::sticked:
+            if (event.mouseButton.button == sf::Mouse::Left) {
+                std::cout << "why are you gay?" << std::endl; 
+                m_gameState = GameState::running;
+                std::cout << lastVelocity.x << " and " << lastVelocity.y << std::endl; 
+                m_balls.front().velocity = lastVelocity;
+            }
+            break;
         case GameState::running: break;
         case GameState::endLose: break;
         case GameState::endWin : break;

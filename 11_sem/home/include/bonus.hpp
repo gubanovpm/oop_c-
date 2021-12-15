@@ -104,4 +104,14 @@ public:
     friend class Arkanoid;
 };
 
+class StickyFingers final : public Bonus {
+public:
+    StickyFingers(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+    bool deactivate(Arkanoid &game) override;
+
+    friend class Arkanoid;
+};
+
 }

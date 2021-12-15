@@ -167,8 +167,8 @@ void arkanoid_game::UnderLine::activate(Arkanoid &game) {
 }
 
 bool arkanoid_game::UnderLine::deactivate(Arkanoid &game) {
-    std::cout << m_time << std::endl;
-    if (m_time > time / 2) return true;
+    // std::cout << m_time << std::endl;
+    if (m_time > time) return true;
 
     m_position = {-100, 0};
     return false;
@@ -267,6 +267,43 @@ void arkanoid_game::BurnIt::draw(sf::RenderWindow &window) const {
     static sf::CircleShape target(radius / 2);
     target.setOrigin(radius / 2, radius / 2);
     target.setFillColor(sf::Color{255, 0, 0});
+    target.setPosition(m_position);
+    window.draw(target);
+}
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+void arkanoid_game::StickyFingers::activate(Arkanoid &game) {
+    m_time = 0;
+    ++game.greened;
+    game.m_paddle.isSticky = true;
+    // if (game.m_balls.front().velocity.x == 0 && game.m_balls.front().velocity.y == 0)
+        game.lastVelocity = game.m_balls.front().velocity;
+    std::cout << game.lastVelocity.x << " aaaand  " << game.lastVelocity.y << std::endl;
+    game.m_gameState = Arkanoid::GameState::sticked;
+    game.m_paddle.color    = sf::Color {0, 255, 0};
+}
+
+bool arkanoid_game::StickyFingers::deactivate(Arkanoid &game) {
+    if (m_time > time) {
+        if (game.greened < 2)
+            game.m_paddle.color = sf::Color::White;
+        --game.greened;
+        return true;
+    }
+    m_position = {-100, 0};
+    return false;
+}
+
+void arkanoid_game::StickyFingers::draw(sf::RenderWindow &window) const {
+    static sf::CircleShape shape(radius);
+    shape.setOrigin(radius, radius);
+    shape.setFillColor(sf::Color{100, 200, 100});
+    shape.setPosition(m_position);
+    window.draw(shape);
+
+    static sf::CircleShape target(radius / 2, 7);
+    target.setOrigin(radius / 2, radius / 2);
+    target.setFillColor(sf::Color{0, 255, 255});
     target.setPosition(m_position);
     window.draw(target);
 }

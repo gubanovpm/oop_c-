@@ -22,8 +22,8 @@ private:
     const sf::Color kBackgroundColor {12, 31, 47};          // Цвет задника
     const unsigned kMaxNumBalls {250};                      // Максимально возможное количество шариков в один момент времени
     const unsigned kMaxNumBonuses {10};                     // Максимально возможное количество бонусов в один момент времени
-
-    enum class GameState {stuck, running, endLose, endWin};
+    sf::Vector2f  lastVelocity;              // Предылущая скорость при "заморозке"
+    enum class GameState {stuck, running, endLose, endWin, sticked};
     // Поля:
     double m_time;                                          // Время, которое прошло с начала игры в секундах
     sf::FloatRect m_border;                                 // Границы игрового поля
@@ -37,7 +37,8 @@ private:
     Ball m_initialBall {6, {0, 0}, {0, 0}};                 // Макет шарика, используемый для рисова
     sf::Text m_endText;                                     // Текст, который рисуется в конце игры
 
-    char reded = 0;                                         // количество вызовов огеного бонуса
+    char reded   = 0;                                       // количество вызовов огеного бонуса
+    char greened = 0;                                       // количество вызовов StickyFingers
     void addRandomBonus(sf::Vector2f position); 
     void handleBallCollisions(Ball &ball);                  // Функция, которая обрабатывает все столкновения шарика
 
@@ -56,12 +57,13 @@ public:
     void onMousePressed(sf::Event &event);
 
     // Класс бонус должен быть дружественным, так как он может менять внутреннее состояние игры
-    friend class Bonus    ;
-    friend class Triple   ;
-    friend class SlowBall ;
-    friend class UnderLine;
-    friend class SpeedUp  ;
-    friend class BurnIt   ;
+    friend class Bonus        ;
+    friend class Triple       ;
+    friend class SlowBall     ;
+    friend class UnderLine    ;
+    friend class SpeedUp      ;
+    friend class BurnIt       ;
+    friend class StickyFingers;
 };
 
 }
