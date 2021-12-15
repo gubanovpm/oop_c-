@@ -16,7 +16,7 @@ struct Paddle {
 
     sf::FloatRect getBorder() const;
 
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) const;
 };
 
 }

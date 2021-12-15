@@ -30,8 +30,8 @@ void arkanoid_game::Ball::draw(sf::RenderWindow& window) {
 
 std::pair< sf::Vector2f, bool > arkanoid_game::Ball::findClosestPoint(const sf::FloatRect& rect) const {
     float left   = rect.left;
-    float right  = rect.left + rect.width;
-    float bottom = rect.top + rect.height;
+    float right  = rect.left + rect.width ;
+    float bottom = rect.top  + rect.height;
     float top    = rect.top;
 
     sf::Vector2f d;
@@ -54,6 +54,7 @@ bool arkanoid_game::Ball::handleRectCollision(const sf::FloatRect& rect) {
     if (!isColiding)
         return false;
 
+    sf::Vector2f safe_velocity = velocity;
     float closestPointNorm = norm(d);
     // Если расстояние == 0, то это значит, что шарик за 1 фрейм зашёл центром внутрь блока
     // Отражаем шарик от блока
@@ -67,6 +68,7 @@ bool arkanoid_game::Ball::handleRectCollision(const sf::FloatRect& rect) {
         position -= d * ((radius - closestPointNorm) / closestPointNorm);
         velocity -= 2.0f * d * (d * velocity) / (closestPointNorm * closestPointNorm);       
     }
+    if (isRed) velocity = safe_velocity;
     return true;
 }
 

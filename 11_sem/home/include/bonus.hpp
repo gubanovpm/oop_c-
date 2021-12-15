@@ -17,12 +17,14 @@ class Bonus {
 protected:
     inline static const float speed       = 120;
     inline static const float radius      = 15 ;
+    inline static const int   time        = 10 ;
     inline static const int   bonus_count = 7  ;
 
     sf::Vector2f m_position;
     float m_time;
 
 public:
+    Paddle line_ = {{0., 0.}, {0., 0.}};
     Bonus(sf::Vector2f position);
     virtual ~Bonus() {}
     void update(float dt);                                  // Двигаем бонус
@@ -70,6 +72,36 @@ public:
     bool deactivate(Arkanoid &game) override;
     
     friend class Arkanoid;                                  // Класс Arkanoid должен быть дружественным, так как он может менять внутреннее объекта-бонуса
+};
+
+class UnderLine final: public Bonus {
+public:
+    UnderLine(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+    bool deactivate(Arkanoid &game) override;
+
+    friend class Arkanoid;
+};
+
+class SpeedUp final: public Bonus {
+public:
+    SpeedUp(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+    bool deactivate(Arkanoid &game) override;
+
+    friend class Arkanoid;
+};
+
+class BurnIt final: public Bonus {
+public:
+    BurnIt(sf::Vector2f position) : Bonus(position) {}
+    void draw(sf::RenderWindow &window) const override;
+    void activate(Arkanoid &game) override;
+    bool deactivate(Arkanoid &game) override;
+
+    friend class Arkanoid;
 };
 
 }

@@ -12,19 +12,29 @@
 void arkanoid_game::Arkanoid::addRandomBonus(sf::Vector2f position) {
     if (m_bonuses.size() > kMaxNumBonuses) return;
     int max_rand = 10000;
-    if      ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+    if      ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * 2/*/ Bonus::bonus_count*/)
         m_bonuses.push_back(new Triple(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new BigRocket(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new LitRocket(position));
-    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new SlowBall (position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+        m_bonuses.push_back(new UnderLine(position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
+        m_bonuses.push_back(new SpeedUp(position));
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+        m_bonuses.push_back(new BurnIt(position));
 }
 
 void arkanoid_game::Arkanoid::handleBallCollisions(Ball& ball) {
     ball.handleWallsCollision(m_border);
     ball.handlePaddleCollision(m_paddle);
+
+    for (auto it: m_bonuses) {
+        ball.handlePaddleCollision(it->line_);
+    }
 
     auto indexes = ball.handleBrickGridCollision(m_brickGrid);
     if (indexes.first == -1) return;
@@ -39,7 +49,7 @@ arkanoid_game::Arkanoid::Arkanoid(sf::FloatRect border, sf::Font& font) :
     m_gameState{GameState::stuck},
     m_numLives{7} {
         float gap = border.width / 10;
-        m_brickGrid = BrickGrid({border.left + gap, border.top + gap, border.width - 2 * gap, border.height / 2}, 3, 3);
+        m_brickGrid = BrickGrid({border.left + gap, border.top + gap, border.width - 2 * gap, border.height / 2}, 50, 30);
         m_bonusProbability = 0.1;
         m_endText.setFont(font);
     }
@@ -76,7 +86,9 @@ void arkanoid_game::Arkanoid::update(const sf::RenderWindow& window, float dt) {
     // Если шариков нет, то переходи в режим начала игры и уменьшаем кол-во жизней
     if (m_gameState == GameState::running && m_balls.size() == 0) {
         m_gameState = GameState::stuck;
-        m_bonuses.clear();
+        for (auto it = m_bonuses.begin(), itEnd = m_bonuses.end(); it != itEnd;) {
+            
+        }
         m_numLives--;
     }
     // Если жизни кончились, то переходим в состояние конца игры (проигрыш)
