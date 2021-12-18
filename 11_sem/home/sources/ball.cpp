@@ -136,8 +136,7 @@ void arkanoid_game::Ball::handlePaddleCollision(const arkanoid_game::Paddle& pad
     if (!isColiding) return;
 
     if (paddle.isSticky) {
-        if (lostPosition.x == 0. && lostPosition.y == 0) 
-            lostPosition = position - paddle.position;
+        if (lostPosition.x == 0. && lostPosition.y == 0) lostPosition = position - paddle.position;
         if (!(velocity.x == 0. && velocity.y == 0)) lostVelocity = velocity ;
         velocity     = {0., 0.}    ;
         position     = paddle.position + lostPosition;

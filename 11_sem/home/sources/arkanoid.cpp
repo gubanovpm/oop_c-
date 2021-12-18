@@ -21,13 +21,13 @@ void arkanoid_game::Arkanoid::addRandomBonus(sf::Vector2f position) {
         m_bonuses.push_back(new LitRocket(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new SlowBall (position));
-    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new UnderLine(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new SpeedUp(position));
     else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new BurnIt(position));
-    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability * Bonus::bonus_count)
+    else if ((rand() % max_rand) * 1.0f / max_rand < m_bonusProbability / Bonus::bonus_count)
         m_bonuses.push_back(new StickyFingers(position));
 }
 
@@ -184,6 +184,7 @@ void arkanoid_game::Arkanoid::draw(sf::RenderWindow& window) {
 }
 
 void arkanoid_game::Arkanoid::onMousePressed(sf::Event& event) {
+    // std::cout << static_cast<int>(m_gameState) << std::endl;
     switch (m_gameState) {
         case GameState::stuck:
             if (event.mouseButton.button == sf::Mouse::Left) {
@@ -197,13 +198,14 @@ void arkanoid_game::Arkanoid::onMousePressed(sf::Event& event) {
             break;
         case GameState::sticked:
             if (event.mouseButton.button == sf::Mouse::Left) {
-                m_gameState = GameState::running;
                 float dt = 0.016;
                 for (auto &ball: m_balls) {
                     if (ball.touched) { 
                         ball.velocity.x =  ball.lostVelocity.x ;
                         ball.velocity.y = -std::abs(ball.lostVelocity.y) ;
                         ball.position  += ball.velocity * dt; 
+                        ball.touched   = false;
+                        ball.lostPosition = {0., 0.};
                     }
                 }
             }

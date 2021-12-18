@@ -23,7 +23,7 @@ private:
     const unsigned kMaxNumBalls {250};                      // Максимально возможное количество шариков в один момент времени
     const unsigned kMaxNumBonuses {10};                     // Максимально возможное количество бонусов в один момент времени
 
-    enum class GameState {stuck, running, endLose, endWin, sticked};
+    enum class GameState {stuck = 0, running = 1, endLose = 2, endWin = 3, sticked = 4};
     // Поля:
     double m_time;                                          // Время, которое прошло с начала игры в секундах
     sf::FloatRect m_border;                                 // Границы игрового поля

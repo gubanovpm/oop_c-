@@ -52,15 +52,21 @@ void arkanoid_game::Triple::activate(Arkanoid &game) {
     // В данном случае простой цикл через итераторы не сработает, так как
     // массив game.m_balls увеличивается в процессе выполнения цикла
     bool isred = false;
+
+    for (auto &ball: game.m_balls) {
+        if (ball.touched) return;
+    }
+
+    int curBallNum = game.m_balls.size();
     float initVelocity = std::sqrt(ball_it->velocity.x * ball_it->velocity.x + ball_it->velocity.y * ball_it->velocity.y);
     for (int i = 0; i < numBalls; i++) {
+        isred     |= ball_it->isRed;
         // Выбираем случайный вектор скорости
         float angle = rand() % 1000 * (2 * M_PI / 1000);
         float vx = initVelocity * sin(angle);
         float vy = initVelocity * cos(angle);
         // Добавляем шарик в список game.m_balls
         game.addBall({game.m_initialBall.radius, (*ball_it).position, {vx, vy}});
-        isred |= ball_it->isRed;
         // Делаем то же самое для ещё одного шарика
         angle = rand() % 1000 * (2 * M_PI / 1000);
         vx = initVelocity * sin(angle);
@@ -75,6 +81,7 @@ void arkanoid_game::Triple::activate(Arkanoid &game) {
             ball.color = sf::Color {255, 0, 0};
         }
     }
+    
 }
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -284,6 +291,7 @@ bool arkanoid_game::StickyFingers::deactivate(Arkanoid &game) {
         if (game.greened < 2) {
             game.m_paddle.color    = sf::Color::White;
             game.m_paddle.isSticky = false;
+            game.m_gameState       = Arkanoid::GameState::running;
         }
         --game.greened;
         return true;
