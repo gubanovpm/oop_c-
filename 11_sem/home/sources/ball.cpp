@@ -123,7 +123,8 @@ std::pair<int, int> arkanoid_game::Ball::handleBrickGridCollision(const BrickGri
     if (closestBrickIndexes.first == -1) return closestBrickIndexes;
 
     // Упруго сталкиваем шарик с найденым блоком
-    sf::FloatRect rect {left + closestBrickIndexes.first * brickWidth, top + closestBrickIndexes.second * brickHeight, brickWidth, brickHeight};
+    sf::FloatRect rect {left + closestBrickIndexes.first  * brickWidth, 
+                        top  + closestBrickIndexes.second * brickHeight, brickWidth, brickHeight};
     handleRectCollision(rect);
 
     // Возвращаем координаты блока в сетки блоков
@@ -134,23 +135,22 @@ void arkanoid_game::Ball::handlePaddleCollision(const arkanoid_game::Paddle& pad
     auto [d, isColiding] = findClosestPoint(paddle.getBorder());
     if (!isColiding) return;
 
-    if (lostPosition.x == 0. && lostPosition.y == 0) 
-        lostPosition = position - paddle.position;
-
     if (paddle.isSticky) {
+        if (lostPosition.x == 0. && lostPosition.y == 0) 
+            lostPosition = position - paddle.position;
         if (!(velocity.x == 0. && velocity.y == 0)) lostVelocity = velocity ;
         velocity     = {0., 0.}    ;
         position     = paddle.position + lostPosition;
         touched      = true;
         return;
     }
-    if (!(lostVelocity.x == 0. && lostVelocity.y == 0.)) {
-        velocity = lostVelocity;
-    }
+    lostPosition = {0., 0.};
     // Столкновение не упругое
     // Угол отражения зависит от места на ракетке, куда стукнулся шарик
     // Если шарик стукнулся в левую часть ракетки, то он должен полететь влево.
     // Если в правую часть ракетки, то вправо.
+    if (!(lostVelocity.x == 0. && lostVelocity.y == 0.)) velocity = lostVelocity;
+
     const float pi = 3.14159265;
     float velocityAngle = (position.x - paddle.position.x) / (paddle.size.x + 2 * radius) * (0.8 * pi) + pi / 2;
     float velocityNorm = norm(velocity);
