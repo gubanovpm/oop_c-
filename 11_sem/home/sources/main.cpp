@@ -5,6 +5,9 @@
 
 #include "../include/arkanoid.hpp"
 
+// to compile on Windows with SFML libs installed in MinGW use:
+// g++ ../sources/main.cpp ../sources/bonus.cpp ../sources/brick_grid.cpp ../sources/brick.cpp ../sources/arkanoid.cpp ../sources/paddle.cpp ../sources/common.cpp ../sources/ball.cpp -o ARKANOID.exe -lsfml-system -lsfml-window -lsfml-graphics
+
 int main () {
     srand(time(0));
     sf::ContextSettings settings; settings.antialiasingLevel = 8;
