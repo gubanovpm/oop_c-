@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ctime>
 
-#include "arkanoid.hpp"
+#include "../include/arkanoid.hpp"
 
 int main () {
     srand(time(0));
