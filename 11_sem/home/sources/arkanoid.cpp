@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <cmath>
+#include <ctime>
 
 #include "../include/common.hpp"
 #include "../include/bonus.hpp"
@@ -34,11 +35,11 @@ void arkanoid_game::Arkanoid::handleBallCollisions(Ball& ball) {
     ball.handleWallsCollision(m_border);
     ball.handlePaddleCollision(m_paddle);
 
-    auto [d, isColiding] = m_balls.front().findClosestPoint(m_paddle.getBorder());
-    if (isColiding && m_paddle.isSticky) {
-        // lastVelocity = m_balls.front().velocity;
-        m_balls.front().velocity = {0., 0.};
+    for (auto &ball: m_balls) {
+        if (ball.touched) m_gameState = GameState::sticked;
     }
+
+    auto [d, isColiding] = m_balls.front().findClosestPoint(m_paddle.getBorder());
 
     for (auto it: m_bonuses) {
         ball.handlePaddleCollision(it->line_);
@@ -196,10 +197,15 @@ void arkanoid_game::Arkanoid::onMousePressed(sf::Event& event) {
             break;
         case GameState::sticked:
             if (event.mouseButton.button == sf::Mouse::Left) {
-                std::cout << "why are you gay?" << std::endl; 
                 m_gameState = GameState::running;
-                std::cout << lastVelocity.x << " and " << lastVelocity.y << std::endl; 
-                m_balls.front().velocity = lastVelocity;
+                float dt = 0.016;
+                for (auto &ball: m_balls) {
+                    if (ball.touched) { 
+                        ball.velocity.x =  ball.lostVelocity.x ;
+                        ball.velocity.y = -std::abs(ball.lostVelocity.y) ;
+                        ball.position  += ball.velocity * dt; 
+                    }
+                }
             }
             break;
         case GameState::running: break;

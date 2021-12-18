@@ -9,7 +9,7 @@ int main () {
     srand(time(0));
     sf::ContextSettings settings; settings.antialiasingLevel = 8;
     sf::RenderWindow window(sf::VideoMode(1000, 800, 32), "Arkanoid", sf::Style::Default, settings);
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(60);
 
     sf::Clock clock;
         

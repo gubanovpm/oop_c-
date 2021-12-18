@@ -17,8 +17,11 @@ struct Ball {
     float radius;
     sf::Vector2f position;
     sf::Vector2f velocity;
-    bool isRed = false;
+    bool isRed   = false;
+    bool touched = false;
 
+    sf::Vector2f lostVelocity = {0., 0.};
+    sf::Vector2f lostPosition = {0., 0.};
     Ball(float radius, sf::Vector2f position, sf::Vector2f velocity);
 
     void update(float dt);

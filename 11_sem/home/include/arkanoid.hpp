@@ -22,7 +22,7 @@ private:
     const sf::Color kBackgroundColor {12, 31, 47};          // Цвет задника
     const unsigned kMaxNumBalls {250};                      // Максимально возможное количество шариков в один момент времени
     const unsigned kMaxNumBonuses {10};                     // Максимально возможное количество бонусов в один момент времени
-    sf::Vector2f  lastVelocity;              // Предылущая скорость при "заморозке"
+
     enum class GameState {stuck, running, endLose, endWin, sticked};
     // Поля:
     double m_time;                                          // Время, которое прошло с начала игры в секундах

@@ -52,19 +52,19 @@ void arkanoid_game::Triple::activate(Arkanoid &game) {
     // В данном случае простой цикл через итераторы не сработает, так как
     // массив game.m_balls увеличивается в процессе выполнения цикла
     bool isred = false;
-    sf::Vector2f initVelocity = {ball_it->velocity.x, ball_it->velocity.y};
+    float initVelocity = std::sqrt(ball_it->velocity.x * ball_it->velocity.x + ball_it->velocity.y * ball_it->velocity.y);
     for (int i = 0; i < numBalls; i++) {
         // Выбираем случайный вектор скорости
         float angle = rand() % 1000 * (2 * M_PI / 1000);
-        float vx = initVelocity.x * sin(angle);
-        float vy = initVelocity.y * cos(angle);
+        float vx = initVelocity * sin(angle);
+        float vy = initVelocity * cos(angle);
         // Добавляем шарик в список game.m_balls
         game.addBall({game.m_initialBall.radius, (*ball_it).position, {vx, vy}});
         isred |= ball_it->isRed;
         // Делаем то же самое для ещё одного шарика
         angle = rand() % 1000 * (2 * M_PI / 1000);
-        vx = initVelocity.x * sin(angle);
-        vy = initVelocity.y * cos(angle);
+        vx = initVelocity * sin(angle);
+        vy = initVelocity * cos(angle);
         game.addBall({game.m_initialBall.radius, (*ball_it).position, {vx, vy}});
         // Переходим ко следующему шарику в списке
         ball_it++;
@@ -276,17 +276,15 @@ void arkanoid_game::StickyFingers::activate(Arkanoid &game) {
     m_time = 0;
     ++game.greened;
     game.m_paddle.isSticky = true;
-    // if (game.m_balls.front().velocity.x == 0 && game.m_balls.front().velocity.y == 0)
-        game.lastVelocity = game.m_balls.front().velocity;
-    std::cout << game.lastVelocity.x << " aaaand  " << game.lastVelocity.y << std::endl;
-    game.m_gameState = Arkanoid::GameState::sticked;
     game.m_paddle.color    = sf::Color {0, 255, 0};
 }
 
 bool arkanoid_game::StickyFingers::deactivate(Arkanoid &game) {
     if (m_time > time) {
-        if (game.greened < 2)
-            game.m_paddle.color = sf::Color::White;
+        if (game.greened < 2) {
+            game.m_paddle.color    = sf::Color::White;
+            game.m_paddle.isSticky = false;
+        }
         --game.greened;
         return true;
     }
