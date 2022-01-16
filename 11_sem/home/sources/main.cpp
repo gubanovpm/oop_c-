@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <ctime>
-
+// Подключение библиотеки 
 #include "../include/arkanoid.hpp"
 
 // to compile on Windows with SFML libs installed in MinGW use it (!!! in build directory!!!):
@@ -26,9 +26,11 @@ int main () {
         sf::Event event;
         // game.bonusCheck();
         while(window.pollEvent(event)) {
+            // Прекращение работы по нажатии специальных кнопок
             if(event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
                 window.close();
             }
+            // Обработка клавиш мыши
             if (event.type == sf::Event::MouseButtonPressed) {
                 game.onMousePressed(event);
             }
@@ -40,5 +42,6 @@ int main () {
         // Отображам всё нарисованное на временном "холсте" на экран
         window.display();
     }
+    // В случае успешного завершения работы
     return EXIT_SUCCESS;
 }
