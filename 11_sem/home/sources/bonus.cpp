@@ -8,12 +8,14 @@
 arkanoid_game::Bonus::Bonus(sf::Vector2f position): m_position(position) {
     m_time = 0;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::Bonus::update(float dt) {
     m_time += dt;
     m_position.y += speed * dt;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 bool arkanoid_game::Bonus::isColiding(const Paddle &paddle) const {
     bool result = paddle.getBorder().intersects({m_position.x - radius, m_position.y - radius, 2 * radius, 2 * radius});
     return result;
@@ -41,7 +43,8 @@ void arkanoid_game::Triple::draw(sf::RenderWindow &window) const {
     ball.position = m_position + ballRotationRadius * sf::Vector2f(std::cos(angle), std::sin(angle));
     ball.draw(window);
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Применяем эффект бонуса (в данном случае - утроение шариков)
 void arkanoid_game::Triple::activate(Arkanoid &game) {
     // Количество шариков до утроения
@@ -110,7 +113,8 @@ void arkanoid_game::LitRocket::activate(Arkanoid &game) {
         (game.getPaddle().size.x > 50) ? - 15 + game.getPaddle().size.x : game.getPaddle().size.x, game.getPaddle().size.y 
     };
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::LitRocket::draw(sf::RenderWindow &window) const {
     static sf::CircleShape shape(radius);
     shape.setOrigin(radius, radius);
@@ -133,7 +137,8 @@ void arkanoid_game::SlowBall::activate(Arkanoid &game) {
         ball.velocity = { ball.velocity.x * 0.5f  , ball.velocity.y * 0.5f };
     }
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 bool arkanoid_game::SlowBall::deactivate(Arkanoid &game) {
     if (m_time > time) {
         for (auto &ball: game.m_balls) {
@@ -144,7 +149,8 @@ bool arkanoid_game::SlowBall::deactivate(Arkanoid &game) {
     m_position = {-100, 0};
     return false;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::SlowBall::draw(sf::RenderWindow &window) const {
     static sf::CircleShape shape(radius);
     shape.setOrigin(radius, radius);
@@ -172,7 +178,8 @@ void arkanoid_game::UnderLine::activate(Arkanoid &game) {
     m_time = 0;
     line_ = {{game.m_border.left + game.m_border.width / 2, game.m_border.top + game.m_border.height * 0.9f}, {game.m_border.width, 20}};
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 bool arkanoid_game::UnderLine::deactivate(Arkanoid &game) {
     // std::cout << m_time << std::endl;
     if (m_time > time) return true;
@@ -180,7 +187,8 @@ bool arkanoid_game::UnderLine::deactivate(Arkanoid &game) {
     m_position = {-100, 0};
     return false;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::UnderLine::draw(sf::RenderWindow &window) const {
     static sf::CircleShape shape(radius);
     shape.setOrigin(radius, radius);
@@ -207,7 +215,8 @@ void arkanoid_game::SpeedUp::activate(Arkanoid &game) {
         ball.velocity = { ball.velocity.x * 1.5f  , ball.velocity.y * 1.5f };
     }
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 bool arkanoid_game::SpeedUp::deactivate(Arkanoid &game) {
     if (m_time > time) {
         for (auto &ball: game.m_balls) {
@@ -218,7 +227,8 @@ bool arkanoid_game::SpeedUp::deactivate(Arkanoid &game) {
     m_position = {-100, 0};
     return false;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::SpeedUp::draw(sf::RenderWindow &window) const {
     static sf::CircleShape shape(radius);
     shape.setOrigin(radius, radius);
@@ -249,7 +259,8 @@ void arkanoid_game::BurnIt::activate(Arkanoid &game) {
         ball.isRed = true;
     }
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 bool arkanoid_game::BurnIt::deactivate(Arkanoid &game) {
     if (m_time > time) {
         if (game.reded < 2)
@@ -263,7 +274,8 @@ bool arkanoid_game::BurnIt::deactivate(Arkanoid &game) {
     m_position = {-100, 0};
     return false;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::BurnIt::draw(sf::RenderWindow &window) const {
     static sf::CircleShape shape(radius);
     shape.setOrigin(radius, radius);
@@ -285,7 +297,8 @@ void arkanoid_game::StickyFingers::activate(Arkanoid &game) {
     game.m_paddle.isSticky = true;
     game.m_paddle.color    = sf::Color {0, 255, 0};
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 bool arkanoid_game::StickyFingers::deactivate(Arkanoid &game) {
     if (m_time > time) {
         if (game.greened < 2) {
@@ -299,7 +312,8 @@ bool arkanoid_game::StickyFingers::deactivate(Arkanoid &game) {
     m_position = {-100, 0};
     return false;
 }
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 void arkanoid_game::StickyFingers::draw(sf::RenderWindow &window) const {
     static sf::CircleShape shape(radius);
     shape.setOrigin(radius, radius);
